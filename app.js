@@ -24,8 +24,8 @@ app.get('/', async (req, res) => {
         </script>
       </head>
       <body>
-        <h1>Внешний IP-адрес вашего хоста!!!!!</h1>
-        <button onclick="getExternalIPAddress()">Получить IP-адрес!!!!</button>
+        <h1>Внешний IP-адрес вашего хоста!</h1>
+        <button onclick="getExternalIPAddress()">Получить IP-адрес?</button>
         <p id="ip-address"></p>
       </body>
     </html>
