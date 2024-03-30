@@ -18,7 +18,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t my-node-app .
+          docker build --no-cache -t my-node-app .
           docker tag my-node-app "${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest"
           docker push "${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest"
         env:
