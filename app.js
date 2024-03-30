@@ -9,7 +9,7 @@ app.get('/', async (req, res) => {
   res.send(`
     <html>
       <head>
-        <title>Получить внешний IP-адрес</title>
+        <title>Узнать внешний IP-адрес</title>
         <script>
           // Функция для запроса и отображения внешнего IP-адреса
           async function getExternalIPAddress() {
@@ -24,8 +24,8 @@ app.get('/', async (req, res) => {
         </script>
       </head>
       <body>
-        <h1>Внешний IP-адрес вашего хоста!</h1>
-        <button onclick="getExternalIPAddress()">Получить IP-адрес?</button>
+        <h1>Внешний IP-адрес вашего хоста \-_-/ </h1>
+        <button onclick="getExternalIPAddress()">Нажмите чтобы получить!</button>
         <p id="ip-address"></p>
       </body>
     </html>
