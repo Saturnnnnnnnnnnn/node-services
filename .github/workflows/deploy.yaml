@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /path/to/your/project
+            cd /var/www/proj/
             git pull
             docker-compose down
             docker-compose up -d
