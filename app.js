@@ -21,12 +21,24 @@ app.get('/', async (req, res) => {
               console.error('Ошибка получения IP-адреса:', error.message);
             }
           }
+
+          // Функция для перехода ко второму сервису
+          function goToWeatherService() {
+            window.location.href = 'http://localhost:3001'; // Измените URL, если нужно
+          }
+
+          // Функция для перехода к третьему сервису
+          function goToSystemService() {
+            window.location.href = 'http://localhost:3002'; // Измените URL, если нужно
+          }
         </script>
       </head>
       <body>
-        <h1>Upgrade!</h1>
-        <button onclick="getExternalIPAddress()">Push me!</button>
+        <h1>Проверка ip</h1>
+        <button onclick="getExternalIPAddress()">Показать IP-адрес</button>
         <p id="ip-address"></p>
+        <button onclick="goToWeatherService()">Переход на второй сервис</button> <!-- Добавленная кнопка для перехода -->
+        <button onclick="goToSystemService()">Переход на третий сервис</button> <!-- Добавленная кнопка для перехода -->
       </body>
     </html>
   `);
@@ -44,7 +56,7 @@ app.get('/ip', async (req, res) => {
   }
 });
 
-// Запуск сервера
+// eslint-disable-next-line no-unused-vars
 const server = app.listen(port, () => {
-  console.log(`Сервер запущен на порту ${port}`);
+  console.log(`Сервер запущен на порту ${port}`); // ESLint игнорирует эту строку
 });

@@ -1,0 +1,14 @@
+{
+  "name": "info-system-service",
+  "version": "1.0.0",
+  "description": "A simple Node.js application for displaying system information",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Your Name",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
