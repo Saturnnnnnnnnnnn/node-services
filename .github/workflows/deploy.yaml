@@ -1,4 +1,4 @@
-name: Deploy
+name: CI/CD
 
 on:
   push:
@@ -6,32 +6,28 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout Repository
+      uses: actions/checkout@v2
 
-      - name: SSH into remote server and pull changes
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          timeout: 5m
-          script: |
-            cd /var/www/node-service
-            git pull origin main
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
 
-      - name: Deploy with Docker Compose
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          timeout: 10m
-          script: |
-            cd /var/www/node-service
-            docker-compose up -d
+    - name: Build and push Docker images
+      run: |
+        docker-compose build
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        docker-compose push
+
+    - name: Deploy to Kubernetes
+      uses: appleboy/kubernetes-action@master
+      with:
+        kube_config_data: ${{ secrets.KUBE_CONFIG_DATA }}
+        namespace: saturn
+        manifest_files: |
+          ip-service/service1-deployment.yaml
+          weather-service/service2-deployment.yaml
+          info-sytem-service/service3-deployment.yaml
