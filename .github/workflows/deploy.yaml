@@ -19,6 +19,7 @@ jobs:
           username: ${{ secrets.REMOTE_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
+          timeout: 5m
           script: |
             cd /var/www/node-service
             git pull origin main
@@ -30,6 +31,7 @@ jobs:
           username: ${{ secrets.REMOTE_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
+          timeout: 10m
           script: |
             cd /var/www/node-service
             docker-compose up -d
