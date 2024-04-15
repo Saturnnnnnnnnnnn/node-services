@@ -23,11 +23,11 @@ jobs:
         docker-compose push
 
     - name: Deploy to Kubernetes
-      uses: appleboy/kubernetes-action@master
+      uses: appleboy/kubernetes-action@v2
       with:
         kube_config_data: ${{ secrets.KUBE_CONFIG_DATA }}
         namespace: saturn
         manifest_files: |
-          ip-service/service1-deployment.yaml
-          weather-service/service2-deployment.yaml
-          info-sytem-service/service3-deployment.yaml
+          ip-service/deployment.yaml
+          weather-service/deployment.yaml
+          info-sytem-service/deployment.yaml
