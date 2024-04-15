@@ -1,8 +1,8 @@
 const axios = require('axios');
 
+// Функция для получения данных о погоде по заданному городу
 async function getWeatherByCity(city) {
   try {
-    // Выполняем запрос к API OpenWeatherMap для получения данных о погоде
     const response = await axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=57bba2fbb55de86f5c74ec00faae46a3&units=metric`);
     const weatherData = {
       Город: response.data.name,
@@ -27,4 +27,16 @@ async function getWeatherByCity(city) {
   }
 }
 
-module.exports = { getWeatherByCity };
+// Функция для сохранения данных о погоде в базу данных
+async function saveWeatherToDB(city) {
+  try {
+    const weatherData = await getWeatherByCity(city);
+    // Здесь сохраняем погодные данные в базу данных
+    console.log('Данные о погоде сохранены в базе данных:', weatherData);
+  } catch (error) {
+    console.error('Ошибка при сохранении данных о погоде:', error);
+    throw new Error('Ошибка при сохранении данных о погоде');
+  }
+}
+
+module.exports = { getWeatherByCity, saveWeatherToDB };

@@ -1,15 +1,17 @@
 const express = require('express');
-const { getWeatherByCity } = require('./weather');
-// eslint-disable-next-line no-unused-vars
-const app = express();
-const port = 3001; // Второй сервис будет работать на порту 3001
+const { getWeatherByCity, saveWeatherToDB } = require('./weather');
+const sqlite3 = require('sqlite3').verbose();
 
-// Маршрут для отображения страницы с информацией о погоде
+const app = express();
+const port = 3001;
+
+// Создаем подключение к базе данных SQLite
+const db = new sqlite3.Database('../data/weather_service.db');
+
 app.get('/', async (req, res) => {
   try {
     const weatherData = await getWeatherByCity('New York');
 
-    // Форматирование данных для вывода в браузер
     const formattedData = `
       <html>
         <head>
@@ -18,7 +20,6 @@ app.get('/', async (req, res) => {
         <body>
           <h1>Погода в ${weatherData.Город}</h1>
           <p><strong>Погода:</strong> ${weatherData.Погода}</p>
-          //<p><strong>Описание:</strong> ${weatherData.Описание}</p>
           <p><strong>Температура:</strong></p>
           <ul>
             <li>Текущая: ${weatherData.Температура.Текущая}</li>
@@ -32,9 +33,9 @@ app.get('/', async (req, res) => {
             <li>Скорость: ${weatherData.Ветер.Скорость}</li>
             <li>Направление: ${weatherData.Ветер.Направление}</li>
           </ul>
-          <button onclick="window.location.href='http://localhost:3000'">Перейти к первому сервису</button>
-          <button onclick="window.location.href='http://localhost:3002'">Перейти к третьему сервису</button>
-
+          <button onclick="window.location.href='http://localhost:3000'">Перейти к сервису 1</button>
+          <button onclick="window.location.href='http://localhost:3002'">Перейти к сервису 3</button>
+          <button onclick="saveWeather()">Сохранить погоду</button>
         </body>
       </html>
     `;
@@ -46,7 +47,14 @@ app.get('/', async (req, res) => {
   }
 });
 
-// eslint-disable-next-line no-unused-vars
+async function saveWeather() {
+  try {
+    await saveWeatherToDB('New York');
+  } catch (error) {
+    console.error('Ошибка сохранения погоды:', error.message);
+  }
+}
+
 const server = app.listen(port, () => {
   console.log(`Сервер запущен на порту ${port}`);
 });
