@@ -80,7 +80,7 @@ app.get('/', async (req, res) => {
         <h1>Проверка ip</h1>
         <button onclick="getExternalIPAddress()">Показать IP-адрес</button>
         <p id="ip-address"></p>
-        <button onclick="saveIPAddress()">Сохранить в базе</button> <!-- Добавленная кнопка для сохранения -->
+        <button onclick="saveIPAddress()">Сохранить в базе!!!</button> <!-- Добавленная кнопка для сохранения -->
         <button onclick="goToWeatherService()">Переход к сервиву 2</button> <!-- Добавленная кнопка для перехода -->
         <button onclick="goToSystemService()">Перезод к сервису 3</button> <!-- Добавленная кнопка для перехода -->
       </body>
