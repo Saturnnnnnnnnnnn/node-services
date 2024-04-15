@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: service1
-        image: saturn0912/service1:${{ github.sha }}
+        image: saturn0912/service1:latest
         ports:
         - containerPort: 3000
 
