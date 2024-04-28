@@ -1,12 +1,8 @@
 const express = require('express');
-const { getWeatherByCity, saveWeatherToDB } = require('./weather');
-const sqlite3 = require('sqlite3').verbose();
+const { getWeatherByCity } = require('./weather');
 
 const app = express();
 const port = 3001;
-
-// Создаем подключение к базе данных SQLite
-const db = new sqlite3.Database('../data/weather_service.db');
 
 app.get('/', async (req, res) => {
   try {
@@ -35,7 +31,6 @@ app.get('/', async (req, res) => {
           </ul>
           <button onclick="window.location.href='http://localhost:3000'">Перейти к сервису 1</button>
           <button onclick="window.location.href='http://localhost:3002'">Перейти к сервису 3</button>
-          <button onclick="saveWeather()">Сохранить погоду</button>
         </body>
       </html>
     `;
@@ -46,14 +41,6 @@ app.get('/', async (req, res) => {
     res.status(500).send('Ошибка при получении данных о погоде');
   }
 });
-
-async function saveWeather() {
-  try {
-    await saveWeatherToDB('New York');
-  } catch (error) {
-    console.error('Ошибка сохранения погоды:', error.message);
-  }
-}
 
 const server = app.listen(port, () => {
   console.log(`Сервер запущен на порту ${port}`);

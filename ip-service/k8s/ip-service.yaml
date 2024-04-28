@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ip-service
+spec:
+  selector:
+    app: ip-service
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ip-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ip-service
+  template:
+    metadata:
+      labels:
+        app: ip-service
+    spec:
+      containers:
+        - name: ip-service
+          image: saturn0912/ip-service:1.0.0
+          ports:
+            - containerPort: 3000

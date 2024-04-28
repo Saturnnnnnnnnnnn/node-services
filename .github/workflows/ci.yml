@@ -1,0 +1,49 @@
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push IP Service
+      uses: docker/build-push-action@v2
+      with:
+        context: ./ip-service
+        file: ./ip-service/Dockerfile
+        push: true
+        tags: saturn0912/ip-service:1.0.0
+
+    - name: Build and push Weather Service
+      uses: docker/build-push-action@v2
+      with:
+        context: ./weather-service
+        file: ./weather-service/Dockerfile
+        push: true
+        tags: saturn0912/weather-service:1.0.0
+
+    - name: Build and push Info System Service
+      uses: docker/build-push-action@v2
+      with:
+        context: ./info-sytem-service
+        file: ./info-sytem-service/Dockerfile
+        push: true
+        tags: saturn0912/info-system-service:1.0.0
+
+    - name: Set up Kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: '1.30.0'
+
+    - name: Apply Kubernetes manifests
+      run: |
+        echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
+        kubectl apply -f ./ip-service/k8s/ip-service.yaml
+        kubectl apply -f ./weather-service/k8s/weather-service.yaml
+        kubectl apply -f ./info-sytem-service/k8s/info-system-service.yaml

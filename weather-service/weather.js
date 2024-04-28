@@ -27,16 +27,5 @@ async function getWeatherByCity(city) {
   }
 }
 
-// Функция для сохранения данных о погоде в базу данных
-async function saveWeatherToDB(city) {
-  try {
-    const weatherData = await getWeatherByCity(city);
-    // Здесь сохраняем погодные данные в базу данных
-    console.log('Данные о погоде сохранены в базе данных:', weatherData);
-  } catch (error) {
-    console.error('Ошибка при сохранении данных о погоде:', error);
-    throw new Error('Ошибка при сохранении данных о погоде');
-  }
-}
+module.exports = { getWeatherByCity };
 
-module.exports = { getWeatherByCity, saveWeatherToDB };

@@ -9,7 +9,6 @@
   "author": "Your Name",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2",
-    "sqlite3": "^5.1.7"
+    "express": "^4.19.2"
   }
 }
