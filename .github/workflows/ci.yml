@@ -8,6 +8,8 @@ on:
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
+    env:
+      KUBECONFIG: ${{ github.workspace }}/kubeconfig
 
     steps:
       - name: Checkout repository
@@ -25,7 +27,7 @@ jobs:
           context: ./ip-service
           file: ./ip-service/Dockerfile
           push: true
-          tags: saturn0912/ip-service:1.0.0
+          tags: saturn0912/ip-service:${{ github.sha }}
 
       - name: Build and push Weather Service
         uses: docker/build-push-action@v2
@@ -33,7 +35,7 @@ jobs:
           context: ./weather-service
           file: ./weather-service/Dockerfile
           push: true
-          tags: saturn0912/weather-service:1.0.0
+          tags: saturn0912/weather-service:${{ github.sha }}
 
       - name: Build and push Info System Service
         uses: docker/build-push-action@v2
@@ -41,31 +43,19 @@ jobs:
           context: ./info-system-service
           file: ./info-system-service/Dockerfile
           push: true
-          tags: saturn0912/info-system-service:1.0.0
-
-      - name: Create .kube directory
-        run: mkdir -p $HOME/.kube
+          tags: saturn0912/info-system-service:${{ github.sha }}
 
       - name: Setup Kubectl
-        uses: azure/setup-kubectl@v1
-        with:
-          version: 'v1.30.0'
-
-      - name: Configure Kubeconfig
         run: |
-          echo "${{ secrets.MINIKUBE_CA }}" | base64 --decode > $HOME/.kube/ca.crt
-          echo "${{ secrets.MINIKUBE_CERT }}" | base64 --decode > $HOME/.kube/client.crt
-          echo "${{ secrets.MINIKUBE_KEY }}" | base64 --decode > $HOME/.kube/client.key
-          kubectl config set-cluster minikube --certificate-authority=$HOME/.kube/ca.crt --server=${{ secrets.K8S_CLUSTER_SERVER }}
-          kubectl config set-credentials minikube --client-certificate=$HOME/.kube/client.crt --client-key=$HOME/.kube/client.key
-          kubectl config set-context minikube --cluster=minikube --user=minikube
-          kubectl config use-context minikube
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > $KUBECONFIG
+          kubectl config set-cluster minikube --server=${{ secrets.NGROK_URL }}
+          kubectl cluster-info
 
       - name: Deploy IP Service
-        run: kubectl apply -f ./ip-service/k8s/ip-service.yaml --validate=false
+        run: kubectl apply -f ./ip-service/k8s/ip-service.yaml
 
       - name: Deploy Weather Service
-        run: kubectl apply -f ./weather-service/k8s/weather-service.yaml --validate=false
+        run: kubectl apply -f ./weather-service/k8s/weather-service.yaml
 
       - name: Deploy Info System Service
-        run: kubectl apply -f ./info-system-service/k8s/info-system-service.yaml --validate=false
+        run: kubectl apply -f ./info-system-service/k8s/info-system-service.yaml
