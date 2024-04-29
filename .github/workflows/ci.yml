@@ -59,7 +59,7 @@ jobs:
           clusters:
           - name: minikube
             cluster:
-              certificate-authority: ${{ secrets.MINIKUBE_CA }}
+              certificate-authority-data: ${{ secrets.MINIKUBE_CA }}
               server: https://${{ secrets.K8S_CLUSTER_SERVER }}
           users:
           - name: minikube
