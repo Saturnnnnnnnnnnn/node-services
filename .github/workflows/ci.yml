@@ -42,6 +42,10 @@ jobs:
         file: ./info-sytem-service/Dockerfile
         push: true
         tags: saturn0912/info-system-service:1.0.0
+        
+    - name: Create .kube directory
+      run: mkdir -p $HOME/.kube
+      
 
     - name: Set up Kubectl
       uses: azure/setup-kubectl@v1
