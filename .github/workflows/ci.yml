@@ -50,6 +50,11 @@ jobs:
           echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > $KUBECONFIG
           kubectl config set-cluster minikube --server=${{ secrets.NGROK_URL }}
           kubectl cluster-info
+      - name: Log NGROK_URL
+        run: echo "NGROK_URL=${{ secrets.NGROK_URL }}"
+
+      - name: Log KUBECONFIG content
+        run: cat $KUBECONFIG
 
       - name: Deploy IP Service
         run: kubectl apply -f ./ip-service/k8s/ip-service.yaml
