@@ -75,4 +75,4 @@ jobs:
           EOF
           kubectl apply -f ./ip-service/k8s/ip-service.yaml
           kubectl apply -f ./weather-service/k8s/weather-service.yaml
-          kubectl apply -f ./info-sytem-service/k8s/info-system-service.yaml
+          kubectl apply -f ./info-system-service/k8s/info-system-service.yaml
