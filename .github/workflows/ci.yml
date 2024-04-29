@@ -1,4 +1,4 @@
-name: Build and Push Docker images
+name: Build and Push Docker images and Deploy to Kubernetes
 
 on:
   push:
@@ -46,33 +46,26 @@ jobs:
       - name: Create .kube directory
         run: mkdir -p $HOME/.kube
 
-      - name: Set up Kubectl
+      - name: Setup Kubectl
         uses: azure/setup-kubectl@v1
         with:
           version: 'v1.30.0'
 
       - name: Configure Kubeconfig
         run: |
-          cat <<EOF > $HOME/.kube/config
-          apiVersion: v1
-          kind: Config
-          clusters:
-          - name: minikube
-            cluster:
-              certificate-authority-data: ${{ secrets.MINIKUBE_CA }}
-              server: ${{ secrets.K8S_CLUSTER_SERVER }}
-          users:
-          - name: minikube
-            user:
-              client-certificate-data: ${{ secrets.MINIKUBE_CERT }}
-              client-key-data: ${{ secrets.MINIKUBE_KEY }}
-          contexts:
-          - name: minikube
-            context:
-              cluster: minikube
-              user: minikube
-          current-context: minikube
-          EOF
-          kubectl apply -f ./ip-service/k8s/ip-service.yaml --validate=false
-          kubectl apply -f ./weather-service/k8s/weather-service.yaml --validate=false
-          kubectl apply -f ./info-system-service/k8s/info-system-service.yaml --validate=false
+          echo "${{ secrets.MINIKUBE_CA }}" | base64 --decode > $HOME/.kube/ca.crt
+          echo "${{ secrets.MINIKUBE_CERT }}" | base64 --decode > $HOME/.kube/client.crt
+          echo "${{ secrets.MINIKUBE_KEY }}" | base64 --decode > $HOME/.kube/client.key
+          kubectl config set-cluster minikube --certificate-authority=$HOME/.kube/ca.crt --server=${{ secrets.K8S_CLUSTER_SERVER }}
+          kubectl config set-credentials minikube --client-certificate=$HOME/.kube/client.crt --client-key=$HOME/.kube/client.key
+          kubectl config set-context minikube --cluster=minikube --user=minikube
+          kubectl config use-context minikube
+
+      - name: Deploy IP Service
+        run: kubectl apply -f ./ip-service/k8s/ip-service.yaml --validate=false
+
+      - name: Deploy Weather Service
+        run: kubectl apply -f ./weather-service/k8s/weather-service.yaml --validate=false
+
+      - name: Deploy Info System Service
+        run: kubectl apply -f ./info-system-service/k8s/info-system-service.yaml --validate=false
